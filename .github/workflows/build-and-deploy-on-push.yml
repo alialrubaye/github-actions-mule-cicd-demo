@@ -32,7 +32,7 @@ jobs:
       with:
         servers: |
           [{
-           "id": "mule-enterprise",
+           "id": "mycompanytest",
            "username": "${{ secrets.mule_username }}",
            "password": "${{ secrets.mule_password }}"
           }]
@@ -55,20 +55,10 @@ jobs:
       with:
           name: artifacts
           path: target/*.jar
-    
-    - name: Notify Slack
-      uses: act10ns/slack@v1.2.2
-      with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-notifications'
-      if: always()
         
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:    
     
@@ -89,7 +79,6 @@ jobs:
       env:
         USERNAME: ${{ secrets.mule_username }}
         PASSWORD: ${{ secrets.mule_password }}
-        DECRYPTION_KEY: ${{ secrets.decryption_key }}
       run: |
         artifactName=$(ls *.jar | head -1)
         mvn deploy -DmuleDeploy \
@@ -97,13 +86,6 @@ jobs:
          -Danypoint.username="$USERNAME" \
          -Danypoint.password="$PASSWORD" \
          -Denv=Sandbox \
-         -Ddecryption.key="$DECRYPTION_KEY" \
          -DskipTests
          
-    - name: Notify Slack
-      uses: act10ns/slack@v1.2.2
-      with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#github-actions-notifications'
-      if: always()
+
