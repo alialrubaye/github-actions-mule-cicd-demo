@@ -9,9 +9,7 @@ on:
     
 jobs:
   build:
-    runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    runs-on: ubuntu-latest   
     
     steps:
     
@@ -35,8 +33,8 @@ jobs:
         servers: |
           [{
            "id": "mule-enterprise",
-           "username": "${{ secrets.mule_nexus_username }}",
-           "password": "${{ secrets.mule_nexus_password }}"
+           "username": "${{ secrets.mule_username }}",
+           "password": "${{ secrets.mule_password }}"
           }]
     
     - name: Print effective-settings (optional)
@@ -89,8 +87,8 @@ jobs:
     
     - name: Deploy to Sandbox
       env:
-        USERNAME: ${{ secrets.anypoint_cicd_username }}
-        PASSWORD: ${{ secrets.anypoint_cicd_password }}
+        USERNAME: ${{ secrets.mule_username }}
+        PASSWORD: ${{ secrets.mule_password }}
         DECRYPTION_KEY: ${{ secrets.decryption_key }}
       run: |
         artifactName=$(ls *.jar | head -1)
